@@ -7,8 +7,10 @@
              xmlns:assists="clr-namespace:Material.Styles.Assists;assembly=Material.Styles"
              xmlns:avalonia="clr-namespace:Material.Icons.Avalonia;assembly=Material.Icons.Avalonia"
              xmlns:vm="using:M3u8Downloader_H.ViewModels.Menus"
+             xmlns:model="using:M3u8Downloader_H.Models"
              xmlns:behavior="using:M3u8Downloader_H.Behaviors"
              xmlns:converters="using:M3u8Downloader_H.Converters"
+             xmlns:converterAvalonia="using:Avalonia.Controls.Converters"
              x:DataType="vm:SettingsViewModel"
              x:Class="M3u8Downloader_H.Views.Menus.SettingsView">
 
@@ -18,6 +20,9 @@
         </LoadedTrigger>
     </Interaction.Behaviors>
 
+    <UserControl.Resources>
+        <converterAvalonia:EnumToBoolConverter x:Key="EnumToBoolConverter" />
+    </UserControl.Resources>
    <Grid RowDefinitions="*,auto">
         <MaterialStyles:SnackbarHost  HostName="SettingsHost" SnackbarMaxCounts="5">
         <ScrollViewer>
@@ -179,18 +184,33 @@
                             <Run Text="删除所有内容保存后重启程序即取消代理" />
                         </TextBlock>
                     </ToolTip.Tip>
-                    <TextBlock Text="代理地址" Classes="MyTextBlock" />
-                    <Button DockPanel.Dock="Right" Height="40"
+                    <TextBlock Text="代理配置" Classes="MyTextBlock" />
+
+                    <StackPanel Name="proxyInfo" DataContext="{Binding $parent[UserControl].((vm:SettingsViewModel)DataContext).ProxyInfo}">
+                        <TextBox IsEnabled="{Binding Mode,Converter={StaticResource EnumToBoolConverter},ConverterParameter={x:Static model:ProxyMode.Custom}}" 
+                            PlaceholderText="http代理地址" Margin="5" FontSize="18" Theme="{StaticResource CompactTextBox}"  Text="{Binding Address}"/>
+                        <Grid ColumnDefinitions="*,*" IsEnabled="{Binding Mode,Converter={StaticResource EnumToBoolConverter},ConverterParameter={x:Static model:ProxyMode.Custom}}" >
+                            <TextBox PlaceholderText="账号(选填)" Margin="5" FontSize="18" Theme="{StaticResource CompactTextBox}"  Text="{Binding UserName}"/>
+                            <TextBox Grid.Column="1" PlaceholderText="密码(选填)" Margin="5" FontSize="18" Theme="{StaticResource CompactTextBox}"  Text="{Binding PassWord}"/>
+                        </Grid>
+                        <Grid ColumnDefinitions="*,auto" IsEnabled="{Binding Mode,Converter={StaticResource EnumToBoolConverter},ConverterParameter={x:Static model:ProxyMode.Custom}}">
+                            <TextBox PlaceholderText="测试地址(例如 https://www.google.com)" Margin="5" FontSize="18" Theme="{StaticResource CompactTextBox}"  Text="{Binding TestAddress}"/>
+                            <Button DockPanel.Dock="Right" Height="40"  Grid.Column="1" 
                             Command="{Binding $parent[UserControl].((vm:SettingsViewModel)DataContext).TryConnectProxyCommand}"
                             CommandParameter="{Binding #proxyInfo.DataContext}"
                             Content="连接测试"
-                             >
-                    </Button>
-                    <StackPanel Name="proxyInfo" DataContext="{Binding $parent[UserControl].((vm:SettingsViewModel)DataContext).ProxyInfo}">
-                        <TextBox PlaceholderText="http代理地址" Margin="5" FontSize="18" Theme="{StaticResource CompactTextBox}"  Text="{Binding Address}"/>
-                        <TextBox PlaceholderText="账号(选填)" Margin="5" FontSize="18" Theme="{StaticResource CompactTextBox}"  Text="{Binding UserName}"/>
-                        <TextBox PlaceholderText="密码(选填)" Margin="5" FontSize="18" Theme="{StaticResource CompactTextBox}"  Text="{Binding PassWord}"/>
-
+                             />
+                        </Grid>
+                        <StackPanel Spacing="20" Orientation="Horizontal">
+                        <RadioButton Content="无代理"
+                                     IsChecked="{Binding Mode,
+                                         Converter={StaticResource EnumToBoolConverter},
+                                         ConverterParameter={x:Static model:ProxyMode.None}}" />
+                        <RadioButton Content="手动配置代理"
+                                     IsChecked="{Binding Mode,
+                                         Converter={StaticResource EnumToBoolConverter},
+                                         ConverterParameter={x:Static model:ProxyMode.Custom}}" />
+                    </StackPanel>
                     </StackPanel>
 
                 </DockPanel>

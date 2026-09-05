@@ -88,9 +88,9 @@ namespace M3u8Downloader_H.ViewModels.Menus
                     Timeout = TimeSpan.FromSeconds(5)
                 };
 
-                var statu = await httpclient.GetConnectStatus(new Uri("https://www.google.com"));
+                var statu = await httpclient.GetConnectStatus(new Uri(proxy.TestAddress));
 
-                Notifications.Info(statu ? "测试成功,代理正常" : "测试失败,代理不可用");
+                Notifications.Info(statu ? $"测试访问{proxy.TestAddress}成功" : $"测试访问{proxy.TestAddress}失败");
             }
             catch (Exception e)
             {
