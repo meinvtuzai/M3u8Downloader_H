@@ -6,6 +6,7 @@ using M3u8Downloader_H.Abstractions.M3uDownloaders;
 using M3u8Downloader_H.Abstractions.Settings;
 using M3u8Downloader_H.Common.Services;
 using M3u8Downloader_H.Common.Utils;
+using M3u8Downloader_H.Models;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -117,6 +118,9 @@ namespace M3u8Downloader_H.Services
     {
 
         [ObservableProperty]
+        public partial ProxyMode Mode { get; set; } = ProxyMode.None;
+
+        [ObservableProperty]
         public partial string Address { get; set; } = default!;
 
         [ObservableProperty]
@@ -125,25 +129,30 @@ namespace M3u8Downloader_H.Services
         [ObservableProperty]
         public partial string PassWord { get; set; } = default!;
 
+        [ObservableProperty]
+        public partial string TestAddress { get; set; } = default!;
 
         public ProxyService Clone()
         {
             return new ProxyService()
             {
+                Mode = Mode,
                 Address = Address,
                 UserName = UserName,
                 PassWord = PassWord,
+                TestAddress = TestAddress
             };
         }
-
     }
 
     public partial class ProxyService : IEquatable<ProxyService>
     {
         public bool Equals(ProxyService? other)
-            => StringComparer.Ordinal.Equals(Address, other?.Address)
+            => Mode == other?.Mode
+            && StringComparer.Ordinal.Equals(Address, other?.Address)
             && StringComparer.Ordinal.Equals(UserName, other?.UserName)
             && StringComparer.Ordinal.Equals(PassWord, other?.PassWord);
+            
 
         public override bool Equals(object? obj) => obj is ProxyService proxyService && Equals(proxyService);
         public override int GetHashCode()  => base.GetHashCode();

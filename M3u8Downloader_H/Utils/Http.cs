@@ -41,7 +41,7 @@ namespace M3u8Downloader_H.Utils
 
         public void UpdateProxy(ProxyService proxy)
         {
-            if(string.IsNullOrWhiteSpace(proxy.Address))
+            if(proxy.Mode == Models.ProxyMode.None)
                 _webProxy = null;
             else
             {

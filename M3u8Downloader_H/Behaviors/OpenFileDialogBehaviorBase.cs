@@ -82,7 +82,8 @@ public abstract class OpenFileDialogBehaviorBase<TOwner, TControl> : Behavior<TC
 
         if (folders.Count > 0)
         {
-            AttachedTextBox.Text = folders[0].Path.LocalPath;
+            var path = folders[0].Path;
+            AttachedTextBox.Text = path.IsAbsoluteUri? path.LocalPath : path.OriginalString;
         }
     }
 }
