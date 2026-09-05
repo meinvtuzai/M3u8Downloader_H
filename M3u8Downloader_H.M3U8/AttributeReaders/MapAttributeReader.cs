@@ -32,7 +32,7 @@ namespace M3u8Downloader_H.M3U8.AttributeReaders
                     if (Uri.TryCreate(keyValuePair.Value, UriKind.RelativeOrAbsolute, out Uri? relativeUri))
                     {
                         m3UMapInfo.Uri = relativeUri.IsAbsoluteUri ? relativeUri : new Uri(baseUri, relativeUri);
-                        m3UMapInfo.Title = "header" + Path.GetExtension(keyValuePair.Value) ?? ".mp4";
+                        m3UMapInfo.Title = "header" + Path.GetExtension(m3UMapInfo.Uri.Segments.Last()) ?? ".mp4";
                     }
                 }
                 else if (keyValuePair.Key == "BYTERANGE")
